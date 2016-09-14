@@ -1,0 +1,21 @@
+# 0: Load the data in RStudio
+titanic_original <- read.csv("~/Desktop/Springboard Foundations Data Science/Unit 3/titanic_original.csv")
+View(titanic_original)
+
+# 1: Port of embarkation - the embarked column has some missing values - find the missing values and replace them with S.
+titanic_original[169, 11] <- "S"
+titanic_original[285, 11] <- "S"
+titanic_original[1310, 11] <- "S"
+
+# 2: Age 
+# Calculate the mean of the Age column and use that value to populate the missing values
+titanic_original$age[which(is.na(titanic_original$age))] <- mean(titanic_original$age, na.rm = TRUE)
+
+# 3: Lifeboat - missing values in the boat column - fill these empty slots with a dummy value e.g. the string 'None' or 'NA'
+titanic_original$boat[titanic_original$boat == ""] <- NA
+
+# 4: Cabin
+# Create a new column has_cabin_number which has 1 if there is a cabin number, and 0 otherwise.
+library(dplyr)
+titanic_original <- mutate(titanic_original, "has_cabin_number" = `cabin`)
+titanic_original$has_cabin_number <- ifelse(titanic_original$has_cabin_number == "", 0, 1)
