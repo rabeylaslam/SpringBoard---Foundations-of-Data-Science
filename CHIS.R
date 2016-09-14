@@ -156,7 +156,7 @@ ggplot(DF_all, aes(ymin = ymin,
   scale_y_continuous(expand = c(0,0)) +
   theme_tufte()
   
-  # Position for labels on x axis
+# Position for labels on x axis
 DF_all$xtext <- DF_all$xmin + (DF_all$xmax - DF_all$xmin)/2
 
 # Position for labels on y axis (don't change)
@@ -167,7 +167,7 @@ DF_all$ytext <- DF_all$ymin[index] + (DF_all$ymax[index] - DF_all$ymin[index])/2
 ggplot(DF_all, aes(ymin = ymin, ymax = ymax, xmin = xmin, 
                    xmax = xmax, fill = residual)) + 
   geom_rect(col = "white") +
-  # geom_text for ages (i.e. the x axis)
+# geom_text for ages (i.e. the x axis)
   geom_text(aes(x = xtext, 
                 label = X),
             y = 1,
@@ -175,7 +175,7 @@ ggplot(DF_all, aes(ymin = ymin, ymax = ymax, xmin = xmin,
             angle = 90,
             hjust = 1,
             show.legend = FALSE) +
-  # geom_text for BMI (i.e. the fill axis)
+# geom_text for BMI (i.e. the fill axis)
   geom_text(aes(x = max(xmax), 
                 y = ytext,
                 label = FILL),
@@ -186,7 +186,7 @@ ggplot(DF_all, aes(ymin = ymin, ymax = ymax, xmin = xmin,
   theme_tufte() +
   theme(legend.position = "bottom")
   
-  # Load all packages
+# Load all packages
 library(ggplot2)
 library(reshape2)
 library(dplyr)
@@ -195,7 +195,7 @@ library(ggthemes)
 # Script generalized into a function
 mosaicGG <- function(data, X, FILL) {
   
-  # Proportions in raw data
+# Proportions in raw data
   DF <- as.data.frame.matrix(table(data[[X]], data[[FILL]]))
   DF$groupSum <- rowSums(DF)
   DF$xmax <- cumsum(DF$groupSum)
@@ -208,20 +208,20 @@ mosaicGG <- function(data, X, FILL) {
     mutate(ymax = cumsum(value/sum(value)),
            ymin = ymax - value/sum(value))
   
-  # Chi-sq test
+# Chi-sq test
   results <- chisq.test(table(data[[FILL]], data[[X]])) # fill and then x
   resid <- melt(results$residuals)
   names(resid) <- c("FILL", "X", "residual")
 
-  # Merge data
+# Merge data
   DF_all <- merge(DF_melted, resid)
   
-  # Positions for labels
+# Positions for labels
   DF_all$xtext <- DF_all$xmin + (DF_all$xmax - DF_all$xmin)/2
   index <- DF_all$xmax == max(DF_all$xmax)
   DF_all$ytext <- DF_all$ymin[index] + (DF_all$ymax[index] - DF_all$ymin[index])/2
   
-  # plot:
+# plot:
   g <- ggplot(DF_all, aes(ymin = ymin,  ymax = ymax, xmin = xmin, 
                           xmax = xmax, fill = residual)) + 
   geom_rect(col = "white") +
