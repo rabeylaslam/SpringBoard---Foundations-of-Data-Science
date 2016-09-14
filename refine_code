@@ -1,0 +1,49 @@
+# Note: packages already installed
+library(dplyr)
+library(tidyr)
+
+# 0: Load the data in RStudio
+refine_original <- read.csv("~/Desktop/Springboard Foundations Data Science/Unit 3/refine_original.csv")
+View(refine_original)
+
+# 1: Clean up brand names
+refine_original[1:6, 1] <- "philips"
+refine_original[7:13, 1] <- "akzo"
+refine_original[14:16, 1] <- "philips"
+refine_original[17:21, 1] <- "van houten"
+refine_original[22:25, 1] <- "unilever"
+
+# 2: Separate product code and number
+refine_original <- separate(refine_original, Product.code...number, c("product code", "product number"), sep = "-")
+ 
+# 3: Add product categories
+# p = Smartphone; v = TV; x = Laptop; q = Tablet
+refine_original <- mutate(refine_original, "product category" = `product code`)
+refine_original$`product category`[refine_original$`product category` == "p"] <- "Smartphone"
+refine_original$`product category`[refine_original$`product category` == "x"] <- "Laptop"
+refine_original$`product category`[refine_original$`product category` == "v"] <- "TV"
+refine_original$`product category`[refine_original$`product category` == "q"] <- "Tablet"
+
+# 4: Add full address for geocoding
+refine_original <- unite(refine_original, "full_address", c(address, city, country), sep = ", ")
+ 
+# 5: Create dummy variables for company and product category
+# Add four binary (1 or 0) columns for company: company_philips, company_akzo, company_van_houten and company_unilever
+refine_original <- mutate(refine_original, "company_philips" = `company`)
+refine_original$company_philips <- ifelse(refine_original$company_philips == "philips", 1, 0)
+refine_original <- mutate(refine_original, "company_akzo" = `company`)
+refine_original$company_akzo <- ifelse(refine_original$company_akzo == "akzo", 1, 0)
+refine_original <- mutate(refine_original, "company_van_houten" = `company`)
+refine_original$company_van_houten <- ifelse(refine_original$company_van_houten == "van_houten", 1, 0)
+refine_original <- mutate(refine_original, "company_unilever" = `company`)
+refine_original$company_unilever <- ifelse(refine_original$company_unilever == "unilever", 1, 0)
+ 
+# Add four binary (1 or 0) columns for product category: product_smartphone, product_tv, product_laptop and product_tablet
+refine_original <- mutate(refine_original, "product_smartphone" = `product category`)
+refine_original$product_smartphone <- ifelse(refine_original$product_smartphone == "smartphone", 1, 0)
+refine_original <- mutate(refine_original, "product_tv" = `product category`)
+refine_original$product_tv <- ifelse(refine_original$product_tv == "TV", 1, 0)
+refine_original <- mutate(refine_original, "product_laptop" = `product category`)
+refine_original$product_laptop <- ifelse(refine_original$product_laptop == "Laptop", 1, 0)
+refine_original <- mutate(refine_original, "product_tablet" = `product category`)
+refine_original$product_tablet <- ifelse(refine_original$product_tablet == "Tablet", 1, 0)
